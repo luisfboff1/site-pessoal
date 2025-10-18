@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp .claude/agents/twin-developer.md \"$APPDATA/claude-code/agents/\")",
+      "Bash(cp .claude/agents/twin-reviewer.md \"$APPDATA/claude-code/agents/\")",
+      "Bash(cp .claude/agents/twin-tester.md \"$APPDATA/claude-code/agents/\")",
+      "Bash(cp .claude/agents/twin-documenter.md \"$APPDATA/claude-code/agents/\")",
+      "Bash(cp .claude/commands/twin-workflow.md \"$APPDATA/claude-code/commands/\")",
+      "Bash(ls -la \"$APPDATA/claude-code/agents/\")",
+      "Bash(ls -la \"$APPDATA/claude-code/commands/\")",
+      "Bash(npm run build)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(test -f \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\public\\og-image.jpg\")",
+      "Bash(test -f \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\public\\avatar.png\")",
+      "Bash(timeout 120 npm run build)",
+      "Bash(timeout 150 npm run build)",
+      "Bash(npm run build 2)",
+      "Bash(1)",
+      "Bash(timeout 180 npm run build)",
+      "Bash(timeout 200 npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npm run dev)",
+      "Bash(npx playwright --version)",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(curl -I -s http://localhost:3001/portfolio/desenvolvimento)",
+      "Bash(curl -I http://localhost:3001/og-image.jpg)",
+      "Bash(powershell -Command \"Get-Date -Format ''yyyy-MM-dd-HH-mm''\")",
+      "Bash(move \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plan-current.md\" \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans\\2025-10-18-15-04-plan.md\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

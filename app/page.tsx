@@ -1,103 +1,276 @@
-import Image from "next/image";
+'use client';
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+import SplitText from '@/components/SplitText';
+import ProfileCard from '@/components/ProfileCard';
+import { Menu, MenuItem, HoveredLink } from '@/components/ui/navbar-menu';
+import { ServicesSection } from '@/components/sections/ServicesSection';
+import { Footer } from '@/components/sections/Footer';
+import { PortfolioPreview } from '@/components/sections/PortfolioPreview';
+import { cn } from '@/lib/utils';
+import { ArrowDown, Mail, Github, Linkedin } from 'lucide-react';
+const EvaBot = dynamic(() => import('@/components/EvaBot'), { ssr: false });
+import { motion } from 'framer-motion';
+const Lanyard = dynamic(() => import('@/components/Lanyard'), { ssr: false });
+
+const LiquidEther = dynamic(() => import('@/components/LiquidEther'), { ssr: false });
+const TechRollingGallery = dynamic(() => import('../components/TechRollingGallery'), { ssr: false });
+
+function Navbar({ className }: { className?: string }) {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}>
+      <Menu setActive={setActive}>
+        <MenuItem setActive={setActive} active={active} item="Início">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="#home">Início</HoveredLink>
+            <HoveredLink href="#about">Sobre</HoveredLink>
+          </div>
+        </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Portfólio">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="/portfolio/desenvolvimento">Desenvolvimento</HoveredLink>
+            <HoveredLink href="/portfolio/energia-solar">Energia Solar</HoveredLink>
+            <HoveredLink href="/portfolio/ciencia-dados">Ciência de Dados</HoveredLink>
+          </div>
+        </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Serviços">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="#services">Ver Todos</HoveredLink>
+          </div>
+        </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Tecnologias">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="#tech-rolling">Gallery 3D</HoveredLink>
+            {/* <HoveredLink href="#tech-gallery">Stack Completo</HoveredLink> */}
+          </div>
+        </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Contato">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="#contact">Fale Comigo</HoveredLink>
+          </div>
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <main className="relative min-h-screen bg-black overflow-hidden">
+      {/* Background LiquidEther */}
+      <div className="fixed inset-0 z-0" style={{ width: '100%', height: '100vh' }}>
+        <LiquidEther
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          mouseForce={20}
+          cursorSize={100}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <div className="relative z-10">
+        {/* <EvaBot /> */}
+        <Navbar />
+
+        {/* Hero Section com ProfileCard */}
+        <section id="home" className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-32 pb-20 z-20">
+          <div className="max-w-6xl mx-auto text-center space-y-12">
+            {/* ProfileCard no topo */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="flex justify-center mb-8"
+            >
+              <div className="relative w-56 h-56 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl bg-gray-900 flex items-center justify-center mt-8">
+                <img
+                  src="/avatar.png"
+                  alt="Luis Fernando Boff"
+                  className="w-[120%] h-[120%] object-cover translate-y-4" // aumenta a imagem e move pra baixo
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=LuisFernandoBoff';
+                  }}
+                />
+              </div>
+
+            </motion.div>
+
+            {/* Nome com SplitText */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <SplitText
+                text="Luis Fernando Boff"
+                className="text-6xl md:text-8xl font-bold text-white tracking-tight"
+                delay={50}
+                duration={0.6}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                rootMargin="-100px"
+                tag="h1"
+                textAlign="center"
+              />
+            </motion.div>
+
+            {/* Subtítulo com SplitText */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <SplitText
+                text="Energia Solar & Desenvolvedor Full Stack & Data Scientist"
+                className="text-xl md:text-3xl text-purple-300 font-light"
+                delay={80}
+                duration={0.5}
+                ease="power2.out"
+                splitType="words"
+                from={{ opacity: 0, y: 20 }}
+                to={{ opacity: 1, y: 0 }}
+                threshold={0.1}
+                tag="p"
+                textAlign="center"
+              />
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              className="flex flex-wrap justify-center gap-4 pt-8"
+            >
+              <a
+                href="#contact"
+                className="px-8 py-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:scale-105 flex items-center gap-2"
+              >
+                <Mail className="w-5 h-5" />
+                Entre em Contato
+              </a>
+              <a
+                href="#services"
+                className="px-8 py-4 rounded-full border border-white/20 hover:border-purple-500/50 text-white font-medium transition-all hover:scale-105 backdrop-blur-sm"
+              >
+                Ver Serviços
+              </a>
+            </motion.div>
+
+            {/* Scroll Indicator */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1 }}
+              className="pt-12"
+            >
+              {/* <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="flex flex-col items-center gap-2 text-neutral-500"
+              >
+                <span className="text-sm">Role para explorar</span>
+                <ArrowDown className="w-5 h-5" />
+              </motion.div> */}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Lanyard 3D Interactive Section
+        <section className="relative w-full h-[70vh] md:h-screen z-10">
+          <Lanyard />
+        </section> */}
+
+        {/* Services Section */}
+        <ServicesSection />
+
+        {/* Portfolio Preview Section */}
+        <PortfolioPreview />
+
+        {/* Rolling Gallery 3D - Stack Tecnológico (aparece em todas as telas) */}
+        <section id="tech-rolling" className="py-32 px-4">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                Stack Tecnológico em 3D
+              </h2>
+              <p className="text-neutral-400 text-lg md:text-xl max-w-2xl mx-auto">
+                Explore as tecnologias que utilizo em uma galeria interativa 3D
+              </p>
+            </motion.div>
+            <TechRollingGallery />
+          </div>
+        </section>
+
+        {/* Tech Gallery Section removida, pois o carrossel 3D já cumpre esse papel */}
+
+        {/* Contact Section */}
+        <section id="contact" className="py-32 px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <h2 className="text-4xl md:text-6xl font-bold text-white">
+                Vamos trabalhar juntos?
+              </h2>
+              <p className="text-neutral-400 text-lg md:text-xl">
+                Transforme sua ideia em realidade. Entre em contato para discutir seu próximo projeto.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap justify-center gap-4"
+            >
+              <a
+                href="mailto:luisfboff@hotmail.com"
+                className="px-8 py-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:scale-105 flex items-center gap-2"
+              >
+                <Mail className="w-5 h-5" />
+                Email
+              </a>
+              <a
+                href="https://github.com/luisfboff1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-full border border-white/20 hover:border-purple-500/50 text-white font-medium transition-all hover:scale-105 backdrop-blur-sm flex items-center gap-2"
+              >
+                <Github className="w-5 h-5" />
+                GitHub
+              </a>
+              <a
+                href="https://www.linkedin.com/in/luis-fernando-boff-7a64a716b/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-full border border-white/20 hover:border-purple-500/50 text-white font-medium transition-all hover:scale-105 backdrop-blur-sm flex items-center gap-2"
+              >
+                <Linkedin className="w-5 h-5" />
+                LinkedIn
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
+        <Footer />
+
+        {/* EVA bot substitui o robô antigo (escondido em mobile via CSS do componente) */}
+      </div>
+    </main>
   );
 }
