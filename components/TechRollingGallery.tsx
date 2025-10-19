@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, PanInfo } from 'framer-motion';
-import { useIntersectionObserver } from '@/lib/hooks/useIntersectionObserver';
 import { 
   Code2, 
   Layers, 
@@ -64,7 +63,6 @@ export const TechRollingGallery: React.FC<Props> = ({
   pauseOnHover = true,
   rotationSpeed = 0.2,
 }) => {
-  const [observerRef, isIntersecting] = useIntersectionObserver({ threshold: 0.3, rootMargin: '-100px' });
   const autoRotation = useRef(0);
   const dragRotation = useRef(0);
   const [rotation, setRotation] = useState(0);
@@ -82,7 +80,7 @@ export const TechRollingGallery: React.FC<Props> = ({
   // Autoplay loop
     // Autoplay loop com desaceleração no hover
     useEffect(() => {
-    if (!autoplay || !isIntersecting) return;
+  if (!autoplay) return;
     let lastTime = performance.now();
 
     const animate = (now: number) => {
@@ -106,7 +104,7 @@ export const TechRollingGallery: React.FC<Props> = ({
     return () => {
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-    }, [autoplay, isPaused, isDragging, rotationSpeed, isIntersecting]);
+  }, [autoplay, isPaused, isDragging, rotationSpeed]);
 
 
   // Drag handlers
@@ -160,13 +158,9 @@ export const TechRollingGallery: React.FC<Props> = ({
   const itemCount = technologies.length;
   const angleStep = 360 / itemCount;
 
-  if (!isIntersecting) {
-    return <div ref={observerRef} className="w-screen h-[700px] left-1/2 right-1/2 -mx-[50vw]" />;
-  }
 
   return (
     <div
-      ref={observerRef}
       className="relative w-screen h-[700px] flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing left-1/2 right-1/2 -mx-[50vw]"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
