@@ -45,3 +45,5 @@ next-env.d.ts
 twin-plans/
 twin-plan-current.md
 nul
+/.cloude/
+settings.local.json*
