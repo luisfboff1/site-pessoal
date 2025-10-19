@@ -120,16 +120,16 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="flex justify-center mb-8"
             >
-              <ProfileCard
-                name="Luis Fernando Boff"
-                title="Energia Solar & Desenvolvedor Full Stack"
-                handle="luisfboff"
-                status="Online"
-                avatarUrl="/avatar.png"
-                showUserInfo={true}
-                enableTilt={true}
-                className="mx-auto mt-8"
-              />
+              <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl bg-gray-900 flex items-center justify-center mt-8">
+                <img
+                  src="/avatar.png"
+                  alt="Luis Fernando Boff"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=LuisFernandoBoff';
+                  }}
+                />
+              </div>
 
             </motion.div>
 
