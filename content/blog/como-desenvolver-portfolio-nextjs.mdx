@@ -1,0 +1,111 @@
+---
+title: "Como Desenvolver um Portfolio Moderno com Next.js 15"
+date: "2025-10-19"
+category: "Desenvolvimento"
+description: "Tutorial completo de como criar um portfolio profissional com Next.js 15, React 19 e Tailwind CSS 4. Aprenda as melhores práticas de performance e SEO."
+image: "/blog/portfolio-nextjs.jpg"
+keywords: ["next.js 15", "react 19", "portfolio", "desenvolvimento web", "tailwind css", "performance", "seo"]
+author: "Luis Fernando Boff"
+---
+
+# Como Desenvolver um Portfolio Moderno com Next.js 15
+
+Criar um portfolio profissional que se destaque é essencial para desenvolvedores que desejam mostrar suas habilidades. Neste artigo, vou compartilhar como construí meu próprio portfolio usando as tecnologias mais modernas disponíveis.
+
+## Por que Next.js 15?
+
+O Next.js 15 traz diversas melhorias de performance e desenvolvedor experience que tornam o desenvolvimento mais rápido e eficiente:
+
+- **React Server Components** por padrão
+- **Turbopack** para builds ultra-rápidos
+- **Otimização automática de imagens** com next/image
+- **App Router** com roteamento moderno
+- **Partial Prerendering** experimental
+
+## Stack Tecnológica
+
+Para meu portfolio, escolhi as seguintes tecnologias:
+
+- **Framework**: Next.js 15 com App Router
+- **Estilização**: Tailwind CSS v4
+- **Animações**: Framer Motion e GSAP
+- **3D Graphics**: Three.js com React Three Fiber
+- **TypeScript**: Para type safety completo
+
+## Otimizações de Performance
+
+### 1. Image Optimization
+
+Use sempre o componente `Image` do Next.js:
+
+```tsx
+import Image from 'next/image';
+
+<Image
+  src="/avatar.png"
+  alt="Luis Fernando Boff"
+  width={400}
+  height={400}
+  priority
+  quality={85}
+/>
+```
+
+### 2. Intersection Observer para Componentes Pesados
+
+Componentes 3D devem carregar apenas quando visíveis:
+
+```tsx
+const [ref, isIntersecting] = useIntersectionObserver({
+  threshold: 0.3,
+  rootMargin: '-100px'
+});
+
+if (!isIntersecting) return <div ref={ref} />;
+```
+
+### 3. Dynamic Imports
+
+Carregue componentes pesados dinamicamente:
+
+```tsx
+const EvaBot = dynamic(() => import('@/components/EvaBot'), {
+  ssr: false
+});
+```
+
+## SEO Best Practices
+
+Configure metadata completa para cada página:
+
+```tsx
+export const metadata: Metadata = {
+  title: "Seu Título",
+  description: "Descrição otimizada com keywords",
+  keywords: ["palavra1", "palavra2"],
+  openGraph: {
+    title: "Título para redes sociais",
+    images: ["/og-image.jpg"]
+  }
+};
+```
+
+## Deploy na Vercel
+
+O deploy com Next.js na Vercel é extremamente simples:
+
+1. Conecte seu repositório GitHub
+2. Configure variáveis de ambiente
+3. Deploy automático a cada push
+
+A Vercel oferece otimizações automáticas como:
+- Edge Network global
+- Image Optimization
+- Incremental Static Regeneration
+- Analytics integrado
+
+## Conclusão
+
+Desenvolver um portfolio moderno com Next.js 15 permite criar experiências visuais impressionantes sem sacrificar performance. As ferramentas e otimizações nativas do framework facilitam atingir excelentes métricas de Core Web Vitals.
+
+O código completo do meu portfolio está disponível no [GitHub](https://github.com/luisfboff) para você explorar e se inspirar!

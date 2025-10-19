@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion, useMotionValue, useAnimation, useTransform, PanInfo, ResolvedValues } from 'motion/react';
 
 const IMGS: string[] = [
@@ -135,9 +136,11 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({ autoplay = false, pause
                 transform: `rotateY(${(360 / faceCount) * i}deg) translateZ(${radius}px)`
               }}
             >
-              <img
+              <Image
                 src={url}
                 alt="gallery"
+                width={300}
+                height={120}
                 className="pointer-events-none h-[120px] w-[300px] rounded-[15px] border-[3px] border-white object-cover transition-transform duration-300 ease-out group-hover:scale-105 sm:h-[100px] sm:w-[220px]"
               />
             </div>

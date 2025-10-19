@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { PersonStructuredData, OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,23 +10,26 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://luisfboff.com'),
   title: {
     default: "Luis Fernando Boff | Desenvolvedor Full Stack & Data Scientist",
     template: "%s | Luis Fernando"
   },
-  description: "Desenvolvedor especializado em energia solar, aplicativos, ERP, landing pages e data science. Criando soluções inteligentes com Next.js, Python, TypeScript e mais.",
+  description: "Luis Fernando Boff - Especialista em Energia Solar e Desenvolvedor Full Stack. Projetos de sistemas fotovoltaicos, aplicativos web com Next.js e análise de dados com Python. São Paulo, Brasil.",
   keywords: [
-    "desenvolvedor full stack",
-    "energia solar",
-    "data science",
-    "aplicativos",
-    "ERP",
-    "landing pages",
-    "Next.js",
-    "Python",
-    "TypeScript",
+    "energia solar Brasil",
+    "energia fotovoltaica",
+    "desenvolvedor full stack São Paulo",
+    "desenvolvedor Next.js",
+    "cientista de dados Python",
+    "machine learning",
+    "portfolio desenvolvedor",
+    "projetos energia solar",
+    "sistemas fotovoltaicos",
+    "desenvolvimento web Brasil",
     "React",
-    "desenvolvimento web"
+    "TypeScript",
+    "data science"
   ],
   authors: [{ name: "Luis Fernando" }],
   creator: "Luis Fernando",
@@ -44,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://luisfernando.dev",
+    url: "https://luisfboff.com",
     title: "Luis Fernando | Desenvolvedor Full Stack & Data Scientist",
     description: "Desenvolvedor especializado em energia solar, aplicativos, ERP, landing pages e data science.",
     siteName: "Luis Fernando Portfolio",
@@ -73,35 +77,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
-
   return (
     <html lang="pt-BR" className="dark">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://luisfernando.dev" />
+        <link rel="canonical" href="https://luisfboff.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} antialiased bg-black text-white`}>
+        <PersonStructuredData />
+        <OrganizationStructuredData />
+        <WebSiteStructuredData />
         {children}
-
-        {gaId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )}
+        <GoogleAnalytics />
       </body>
     </html>
   );

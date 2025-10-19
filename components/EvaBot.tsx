@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
+import { useIntersectionObserver } from '@/lib/hooks/useIntersectionObserver';
 import styles from './EvaBot.module.css';
 
 // Simple mouse-follow smoothing
@@ -48,6 +49,7 @@ type EvaBotProps = {
 
 export default function EvaBot({ inline = false, size = 20 }: EvaBotProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [observerRef, isIntersecting] = useIntersectionObserver({ threshold: 0.5, rootMargin: '-50px' });
   const evaRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
   const leftEyeRef = useRef<HTMLDivElement>(null);
@@ -55,12 +57,15 @@ export default function EvaBot({ inline = false, size = 20 }: EvaBotProps) {
   const follower = useMouseFollower();
 
   useEffect(() => {
+    if (!isIntersecting) return;
     follower.start();
     return () => follower.stop();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isIntersecting]);
 
   // Update transforms each frame
   useEffect(() => {
+    if (!isIntersecting) return;
     let raf: number;
     const loop = () => {
       const cont = containerRef.current;
@@ -75,9 +80,7 @@ export default function EvaBot({ inline = false, size = 20 }: EvaBotProps) {
         const { x, y } = follower.get();
         const dx = x - centerX;
         const dy = y - centerY;
-        const angle = Math.atan2(dy, dx);
 
-        // Normalize to [-1, 1]
         const nx = Math.max(-1, Math.min(1, dx / (rect.width / 2)));
         const ny = Math.max(-1, Math.min(1, dy / (rect.height / 2)));
 
@@ -105,7 +108,12 @@ export default function EvaBot({ inline = false, size = 20 }: EvaBotProps) {
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isIntersecting]);
+
+  if (!isIntersecting) {
+    return <div ref={observerRef} style={{ minHeight: '100px' }} />;
+  }
 
   if (inline) {
     return (

@@ -2,8 +2,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { Navbar } from '@/components/SharedNavbar';
 
 const InfiniteMenu = dynamic(() => import('@/components/InfiniteMenu'), { ssr: false });

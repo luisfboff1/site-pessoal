@@ -8,10 +8,8 @@ import { ServicesSection } from '@/components/sections/ServicesSection';
 import { Footer } from '@/components/sections/Footer';
 import { PortfolioPreview } from '@/components/sections/PortfolioPreview';
 import { cn } from '@/lib/utils';
-import { ArrowDown, Mail, Github, Linkedin } from 'lucide-react';
-const EvaBot = dynamic(() => import('@/components/EvaBot'), { ssr: false });
+import { Mail, Github, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
-const Lanyard = dynamic(() => import('@/components/Lanyard'), { ssr: false });
 
 const LiquidEther = dynamic(() => import('@/components/LiquidEther'), { ssr: false });
 const TechRollingGallery = dynamic(() => import('../components/TechRollingGallery'), { ssr: false });
@@ -58,7 +56,6 @@ function Navbar({ className }: { className?: string }) {
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-black overflow-hidden">
-      {/* Background LiquidEther */}
       <div className="fixed inset-0 z-0" style={{ width: '100%', height: '100vh' }}>
         <LiquidEther
           colors={['#5227FF', '#FF9FFC', '#B19EEF']}
@@ -71,7 +68,6 @@ export default function Home() {
       </div>
 
       <div className="relative z-10">
-        {/* <EvaBot /> */}
         <Navbar />
 
         {/* Hero Section com ProfileCard */}
@@ -84,16 +80,16 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="flex justify-center mb-8"
             >
-              <div className="relative w-56 h-56 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl bg-gray-900 flex items-center justify-center mt-8">
-                <img
-                  src="/avatar.png"
-                  alt="Luis Fernando Boff"
-                  className="w-[120%] h-[120%] object-cover translate-y-4" // aumenta a imagem e move pra baixo
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=LuisFernandoBoff';
-                  }}
-                />
-              </div>
+              <ProfileCard
+                name="Luis Fernando Boff"
+                title="Energia Solar & Desenvolvedor Full Stack"
+                handle="luisfboff"
+                status="Online"
+                avatarUrl="/avatar.png"
+                showUserInfo={true}
+                enableTilt={true}
+                className="mx-auto mt-8"
+              />
 
             </motion.div>
 
@@ -161,32 +157,9 @@ export default function Home() {
                 Ver Serviços
               </a>
             </motion.div>
-
-            {/* Scroll Indicator */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1 }}
-              className="pt-12"
-            >
-              {/* <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-2 text-neutral-500"
-              >
-                <span className="text-sm">Role para explorar</span>
-                <ArrowDown className="w-5 h-5" />
-              </motion.div> */}
-            </motion.div>
           </div>
         </section>
 
-        {/* Lanyard 3D Interactive Section
-        <section className="relative w-full h-[70vh] md:h-screen z-10">
-          <Lanyard />
-        </section> */}
-
-        {/* Services Section */}
         <ServicesSection />
 
         {/* Portfolio Preview Section */}
@@ -268,8 +241,6 @@ export default function Home() {
         </section>
 
         <Footer />
-
-        {/* EVA bot substitui o robô antigo (escondido em mobile via CSS do componente) */}
       </div>
     </main>
   );

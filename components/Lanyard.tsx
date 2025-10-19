@@ -1,7 +1,7 @@
-/* eslint-disable react/no-unknown-property */
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame, ThreeEvent } from '@react-three/fiber';
+import { useIntersectionObserver } from '@/lib/hooks/useIntersectionObserver';
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
 import {
   BallCollider,
@@ -36,6 +36,7 @@ export default function Lanyard({
   fov = 20,
   transparent = true
 }: LanyardProps) {
+  const [observerRef, isIntersecting] = useIntersectionObserver({ threshold: 0.3, rootMargin: '-100px', freezeOnceVisible: true });
   const [assetsReady, setAssetsReady] = useState<boolean | 'checking'>('checking');
 
   // Soft-guard: check assets exist before trying to render 3D
@@ -64,8 +65,8 @@ export default function Lanyard({
   }, []);
 
   return (
-    <div className="relative z-0 w-full h-[70vh] md:h-screen flex justify-center items-center transform scale-100 origin-center">
-      {assetsReady === true && (
+    <div ref={observerRef} className="relative z-0 w-full h-[70vh] md:h-screen flex justify-center items-center transform scale-100 origin-center">
+      {isIntersecting && assetsReady === true && (
         <Canvas
           camera={{ position, fov }}
           gl={{ alpha: transparent }}

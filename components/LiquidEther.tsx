@@ -63,7 +63,7 @@ export default function LiquidEther({
   iterationsPoisson = 32,
   dt = 0.014,
   BFECC = true,
-  resolution = 0.5,
+  resolution = typeof window !== 'undefined' && window.innerWidth < 768 ? 0.3 : 0.5,
   isBounce = false,
   colors = defaultColors,
   style = {},
@@ -1228,7 +1228,7 @@ export default function LiquidEther({
           webglRef.current.pause();
         }
       },
-      { threshold: [0, 0.01, 0.1] }
+      { threshold: [0, 0.01, 0.1], rootMargin: '-100px' }
     );
     io.observe(container);
     intersectionObserverRef.current = io;
