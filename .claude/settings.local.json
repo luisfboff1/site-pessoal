@@ -25,7 +25,10 @@
       "Bash(curl -I -s http://localhost:3001/portfolio/desenvolvimento)",
       "Bash(curl -I http://localhost:3001/og-image.jpg)",
       "Bash(powershell -Command \"Get-Date -Format ''yyyy-MM-dd-HH-mm''\")",
-      "Bash(move \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plan-current.md\" \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans\\2025-10-18-15-04-plan.md\")"
+      "Bash(move \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plan-current.md\" \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans\\2025-10-18-15-04-plan.md\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/epodak/reactbits/main/src/components/ProfileCard.tsx\")",
+      "WebSearch",
+      "Bash(powershell -Command \"Get-Date -Format ''yyyy-MM-dd''\")"
     ],
     "deny": [],
     "ask": []
