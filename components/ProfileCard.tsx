@@ -106,6 +106,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           className="w-full h-full object-cover"
           priority
           quality={85}
+          fetchPriority="high"
         />
         {status && (
           <span className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 rounded-full border-2 border-neutral-900 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />

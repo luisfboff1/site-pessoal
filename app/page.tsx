@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import SplitText from '@/components/SplitText';
 import ProfileCard from '@/components/ProfileCard';
@@ -54,17 +54,57 @@ function Navbar({ className }: { className?: string }) {
 }
 
 export default function Home() {
+  const [showLiquidEther, setShowLiquidEther] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50 && !hasScrolled) {
+        setHasScrolled(true);
+        setShowLiquidEther(true);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      setShowLiquidEther(true);
+    }, 2500);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [hasScrolled]);
+
   return (
     <main className="relative min-h-screen bg-black overflow-hidden">
       <div className="fixed inset-0 z-0" style={{ width: '100%', height: '100vh' }}>
-        <LiquidEther
-          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
-          mouseForce={20}
-          cursorSize={100}
-          autoDemo={true}
-          autoSpeed={0.5}
-          autoIntensity={2.2}
-        />
+        {!showLiquidEther && (
+          <div
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{
+              background: 'radial-gradient(circle at 50% 50%, rgba(82,39,255,0.15) 0%, rgba(0,0,0,1) 70%)'
+            }}
+          />
+        )}
+        {showLiquidEther && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            className="w-full h-full"
+          >
+            <LiquidEther
+              colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+              mouseForce={20}
+              cursorSize={100}
+              autoDemo={true}
+              autoSpeed={0.5}
+              autoIntensity={2.2}
+            />
+          </motion.div>
+        )}
       </div>
 
       <div className="relative z-10">
