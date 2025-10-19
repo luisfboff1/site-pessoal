@@ -1,5 +1,8 @@
+// Example: If you require explicit cookie consent from users, call Clarity.consent(true) after they accept cookies.
+// Example: To prioritize a session for recording, call Clarity.upgrade('important-action') when a key event happens.
 'use client';
 import React, { useState, useEffect } from 'react';
+import Clarity from '@microsoft/clarity';
 import dynamic from 'next/dynamic';
 import SplitText from '@/components/SplitText';
 import ProfileCard from '@/components/ProfileCard';
@@ -75,6 +78,13 @@ export default function Home() {
       clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
     };
+      // Microsoft Clarity Identify API example
+      // Replace 'custom-id' with a real user/session/page identifier if available
+      Clarity.identify('custom-id', undefined, undefined, 'Luis Fernando Boff');
+      // Custom Tag example
+      Clarity.setTag('userType', 'visitor');
+      // Custom Event example
+      Clarity.event('page-loaded');
   }, [hasScrolled]);
 
   return (

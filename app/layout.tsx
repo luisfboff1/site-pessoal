@@ -1,4 +1,8 @@
+// To enable cookie consent for Clarity tracking, call Clarity.consent(true) or Clarity.consent(false) after initialization if required by your privacy policy.
+// To prioritize session recording, use Clarity.upgrade('reason') when a special event occurs.
 import type { Metadata } from "next";
+import { useEffect } from "react";
+import Clarity from "@microsoft/clarity";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
@@ -78,6 +82,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Initialize Microsoft Clarity only on the client
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+  Clarity.init("tss7r1evpo"); // Microsoft Clarity project ID
+    }
+  }, []);
   return (
     <html lang="pt-BR" className="dark">
       <head>
