@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Navbar } from '@/components/SharedNavbar';
 import { Lightbulb, Code, TrendingUp, ArrowLeft, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import type { BlogPost } from '@/lib/mdx';
+import Plasma from '@/components/Plasma';
 
 type CategoryPageProps = {
   category: string;
@@ -59,16 +59,25 @@ export default function CategoryPage({
   const gradientBg = gradient.replace('from-', 'from-').replace('via-', 'via-').replace('to-', 'to-').split('/')[0].replace('from-', '').replace('via-', '').replace('to-', '').split(' ')[0];
 
   return (
-    <main className="relative min-h-screen bg-black overflow-hidden">
+  <main className="relative min-h-screen bg-transparent overflow-hidden">
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <Plasma
+          color="#ff6b35"
+          speed={0.6}
+          direction="forward"
+          scale={1.1}
+          opacity={0.8}
+          mouseInteractive={false}
+        />
+      </div>
       <div className={`fixed inset-0 bg-gradient-to-br from-${gradientBg}-900/10 via-black to-black`} />
 
       <div className="relative z-10">
-        <Navbar />
 
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="container mx-auto px-4 py-20 md:py-32 mt-16"
+          className="container mx-auto px-4 py-12 md:py-20 mt-8"
         >
           {/* Breadcrumb */}
           <motion.div
@@ -90,7 +99,7 @@ export default function CategoryPage({
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16 max-w-4xl mx-auto"
+            className="text-center mb-12 max-w-4xl mx-auto"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}

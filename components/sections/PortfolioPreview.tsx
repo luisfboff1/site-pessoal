@@ -50,21 +50,21 @@ export const PortfolioPreview = () => {
       description: 'Aplicativos web modernos, ERPs e landing pages otimizadas',
       href: '/portfolio/desenvolvimento',
       icon: <Code className="w-6 h-6 text-white" />,
-      gradient: 'bg-gradient-to-br from-blue-600 to-purple-600'
+      gradient: 'bg-gradient-to-br from-cyan-600 to-teal-600'
     },
     {
       title: 'Energia Solar',
       description: 'Sistemas de monitoramento e otimização de energia renovável',
       href: '/portfolio/energia-solar',
       icon: <Zap className="w-6 h-6 text-white" />,
-      gradient: 'bg-gradient-to-br from-yellow-500 to-orange-600'
+      gradient: 'bg-gradient-to-br from-emerald-500 to-teal-600'
     },
     {
       title: 'Ciência de Dados',
       description: 'Análise preditiva, machine learning e visualização de dados',
       href: '/portfolio/ciencia-dados',
       icon: <BarChart3 className="w-6 h-6 text-white" />,
-      gradient: 'bg-gradient-to-br from-green-500 to-teal-600'
+      gradient: 'bg-gradient-to-br from-teal-500 to-cyan-600'
     }
   ];
 

@@ -17,9 +17,9 @@ export default function DesenvolvimentoBlog() {
       categoryName="Desenvolvimento"
       categoryDescription="Full Stack, Frontend, Backend, Apps Mobile e arquitetura de software"
       icon="code"
-      gradient="from-blue-500/20 via-purple-500/20 to-pink-500/20"
-      iconColor="text-purple-400"
-      borderColor="border-purple-500/20 hover:border-purple-500/40"
+      gradient="from-emerald-600/10 via-cyan-600/10 to-sky-600/10"
+      iconColor="text-cyan-300"
+      borderColor="border-cyan-600/20 hover:border-cyan-600/40"
       posts={posts}
     />
   );

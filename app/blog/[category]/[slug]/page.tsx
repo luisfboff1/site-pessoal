@@ -2,13 +2,13 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Metadata } from 'next';
-import { Navbar } from '@/components/SharedNavbar';
 import { getPostBySlug, getCategorySlugs, getAllCategories } from '@/lib/mdx';
 import MDXComponents from '@/components/MDXComponents';
 import { SocialShare } from '@/components/blog/SocialShare';
 import { Newsletter } from '@/components/blog/Newsletter';
 import { Comments } from '@/components/blog/Comments';
 import { BlogPostSchema, BreadcrumbSchema } from '@/components/blog/BlogSchema';
+import Plasma from '@/components/Plasma';
 import { ArrowLeft, Calendar, Clock, User, Tag } from 'lucide-react';
 import Link from 'next/link';
 
@@ -116,12 +116,20 @@ export default async function BlogPostPage({ params }: PageProps) {
         ]}
       />
 
-      <main className="relative min-h-screen bg-black overflow-hidden">
-        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/5 via-black to-black" />
+  <main className="relative min-h-screen overflow-hidden">
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <Plasma
+            color="#ff6b35"
+            speed={0.6}
+            direction="forward"
+            scale={1.1}
+            opacity={0.8}
+            mouseInteractive={true}
+          />
+        </div>
+  <div className="fixed inset-0 bg-gradient-to-br from-emerald-900/5 via-black/20 to-transparent" />
 
         <div className="relative z-10">
-          <Navbar />
-
           <article className="container mx-auto px-4 py-20 md:py-32 mt-16 max-w-4xl">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-neutral-400 mb-8">

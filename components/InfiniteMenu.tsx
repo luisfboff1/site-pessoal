@@ -755,7 +755,8 @@ class InfiniteGridMenu {
   private init(onInit?: InitCallback): void {
     const gl = this.canvas.getContext('webgl2', {
       antialias: true,
-      alpha: false
+      // alpha:true permite que o canvas seja transparente e mostre o fundo do site
+      alpha: true
     });
     if (!gl) {
       throw new Error('No WebGL 2 context!');
@@ -1103,6 +1104,7 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [] }) => {
         id="infinite-grid-menu-canvas"
         ref={canvasRef}
         className="cursor-grab w-full h-full overflow-hidden relative outline-none active:cursor-grabbing"
+        style={{ background: 'transparent' }}
       />
 
       {activeItem && (
@@ -1185,10 +1187,10 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [] }) => {
           sm:h-[60px]
           grid
           place-items-center
-          bg-[#00ffff]
-          border-[3px]
+            bg-transparent
+            border-[3px]
           sm:border-[5px]
-          border-black
+            border-white/20
           rounded-full
           cursor-pointer
           transition-all

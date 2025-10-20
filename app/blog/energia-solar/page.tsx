@@ -17,9 +17,9 @@ export default function EnergiaSolarBlog() {
       categoryName="Energia Solar"
       categoryDescription="Projetos fotovoltaicos, eficiência energética e sustentabilidade"
       icon="lightbulb"
-      gradient="from-yellow-500/20 via-orange-500/20 to-red-500/20"
-      iconColor="text-yellow-400"
-      borderColor="border-yellow-500/20 hover:border-yellow-500/40"
+      gradient="from-emerald-600/10 via-cyan-600/10 to-sky-600/10"
+      iconColor="text-emerald-300"
+      borderColor="border-emerald-600/20 hover:border-emerald-600/40"
       posts={posts}
     />
   );

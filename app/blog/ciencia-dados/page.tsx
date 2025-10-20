@@ -17,9 +17,9 @@ export default function CienciaDadosBlog() {
       categoryName="Ciência de Dados"
       categoryDescription="Machine Learning, Deep Learning, análise de dados e otimização"
       icon="trending-up"
-      gradient="from-green-500/20 via-teal-500/20 to-cyan-500/20"
-      iconColor="text-green-400"
-      borderColor="border-green-500/20 hover:border-green-500/40"
+      gradient="from-emerald-600/10 via-cyan-600/10 to-sky-600/10"
+      iconColor="text-teal-300"
+      borderColor="border-teal-600/20 hover:border-teal-600/40"
       posts={posts}
     />
   );

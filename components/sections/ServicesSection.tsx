@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Settings, Globe, BarChart3, type LucideIcon } from 'lucide-react';
 
@@ -8,29 +8,76 @@ interface ServiceCardProps {
   title: string;
   description: string;
   delay?: number;
+  gradient: string;
+  iconColor: string;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ Icon, title, description, delay = 0 }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ Icon, title, description, delay = 0, gradient, iconColor }) => {
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateXValue = ((y - centerY) / centerY) * -10;
+    const rotateYValue = ((x - centerX) / centerX) * 10;
+
+    setRotateX(rotateXValue);
+    setRotateY(rotateYValue);
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.5 }}
-      whileHover={{ y: -5 }}
-      className="relative group"
+      className="relative group perspective-1000"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className="relative p-8 rounded-2xl bg-black/40 backdrop-blur-sm border border-white/10 hover:border-purple-500/50 transition-all duration-300">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
-        
-        <div className="relative space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
-            <Icon className="w-6 h-6 text-purple-400" />
-          </div>
-          <h3 className="text-xl font-bold text-white">{title}</h3>
-          <p className="text-neutral-400 text-sm leading-relaxed">{description}</p>
+      {/* Glow effect */}
+      <div className={`absolute -inset-2 bg-gradient-to-r ${gradient} rounded-2xl blur-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+
+      <motion.div
+        animate={{
+          rotateX,
+          rotateY,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+        }}
+        style={{
+          transformStyle: 'preserve-3d',
+        }}
+        className="relative p-8 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-300 hover:shadow-2xl"
+      >
+        {/* Gradient overlay */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-2xl`} />
+
+        <div className="relative space-y-4" style={{ transform: 'translateZ(50px)' }}>
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 400 }}
+            className={`w-14 h-14 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-lg`}
+          >
+            <Icon className={`w-7 h-7 ${iconColor}`} />
+          </motion.div>
+          <h3 className="text-2xl font-bold text-white">{title}</h3>
+          <p className="text-gray-300 leading-relaxed">{description}</p>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -40,22 +87,30 @@ export const ServicesSection: React.FC = () => {
     {
       Icon: Sun,
       title: 'Energia Solar',
-      description: 'Desenvolvimento de soluções inteligentes para otimização e monitoramento de sistemas de energia solar.'
+      description: 'Projetos fotovoltaicos completos, sistemas de monitoramento IoT e otimização com Machine Learning para geração solar.',
+      gradient: 'from-emerald-500 to-teal-500',
+      iconColor: 'text-emerald-100',
     },
     {
       Icon: Settings,
       title: 'Aplicativos e ERP',
-      description: 'Criação de aplicativos personalizados e sistemas ERP robustos para gestão empresarial completa.'
+      description: 'Desenvolvimento de sistemas ERP personalizados, apps mobile multiplataforma e soluções web escaláveis.',
+      gradient: 'from-cyan-600 to-teal-600',
+      iconColor: 'text-cyan-100',
     },
     {
       Icon: Globe,
       title: 'Landing Pages',
-      description: 'Design e desenvolvimento de landing pages modernas e responsivas com foco em conversão.'
+      description: 'Sites institucionais modernos, landing pages de alta conversão e portfólios responsivos com SEO avançado.',
+      gradient: 'from-teal-500 to-cyan-500',
+      iconColor: 'text-teal-100',
     },
     {
       Icon: BarChart3,
       title: 'Data Science',
-      description: 'Análise de dados, machine learning e visualizações para insights acionáveis do seu negócio.'
+      description: 'Análise de dados avançada, Machine Learning, Business Intelligence e dashboards interativos com insights acionáveis.',
+      gradient: 'from-sky-500 to-cyan-500',
+      iconColor: 'text-sky-100',
     }
   ];
 
@@ -76,13 +131,15 @@ export const ServicesSection: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <ServiceCard
               key={index}
               Icon={service.Icon}
               title={service.title}
               description={service.description}
+              gradient={service.gradient}
+              iconColor={service.iconColor}
               delay={index * 0.1}
             />
           ))}

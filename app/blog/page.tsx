@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Navbar } from '@/components/SharedNavbar';
 import { BookOpen, Code, Lightbulb, TrendingUp, ArrowRight } from 'lucide-react';
+import Plasma from '@/components/Plasma';
 import Link from 'next/link';
 
 const categories = [
@@ -11,9 +11,9 @@ const categories = [
     slug: 'energia-solar',
     description: 'Projetos fotovoltaicos, eficiência energética, tecnologias solares e sustentabilidade',
     icon: Lightbulb,
-    gradient: 'from-yellow-500/20 via-orange-500/20 to-red-500/20',
-    iconColor: 'text-yellow-400',
-    borderColor: 'border-yellow-500/30 hover:border-yellow-500/60',
+    gradient: 'from-emerald-600/10 via-cyan-600/10 to-sky-600/10',
+    iconColor: 'text-emerald-300',
+    borderColor: 'border-emerald-600/20 hover:border-emerald-600/40',
     posts: 12
   },
   {
@@ -21,9 +21,9 @@ const categories = [
     slug: 'desenvolvimento',
     description: 'Full Stack, Frontend, Backend, Apps Mobile, ERP e arquitetura de software',
     icon: Code,
-    gradient: 'from-blue-500/20 via-purple-500/20 to-pink-500/20',
-    iconColor: 'text-purple-400',
-    borderColor: 'border-purple-500/30 hover:border-purple-500/60',
+    gradient: 'from-emerald-600/10 via-cyan-600/10 to-sky-600/10',
+    iconColor: 'text-cyan-300',
+    borderColor: 'border-cyan-600/20 hover:border-cyan-600/40',
     posts: 24
   },
   {
@@ -31,9 +31,9 @@ const categories = [
     slug: 'ciencia-dados',
     description: 'Machine Learning, Deep Learning, análise de dados e otimização',
     icon: TrendingUp,
-    gradient: 'from-green-500/20 via-teal-500/20 to-cyan-500/20',
-    iconColor: 'text-green-400',
-    borderColor: 'border-green-500/30 hover:border-green-500/60',
+    gradient: 'from-emerald-600/10 via-cyan-600/10 to-sky-600/10',
+    iconColor: 'text-teal-300',
+    borderColor: 'border-teal-600/20 hover:border-teal-600/40',
     posts: 18
   }
 ];
@@ -62,9 +62,19 @@ const itemVariants = {
 
 export default function BlogPage() {
   return (
-    <main className="relative min-h-screen bg-black overflow-hidden">
+  <main className="relative min-h-screen overflow-hidden">
       {/* Background gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/10 via-black to-black" />
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <Plasma
+          color="#ff6b35"
+          speed={0.6}
+          direction="forward"
+          scale={1.1}
+          opacity={0.8}
+          mouseInteractive={true}
+        />
+      </div>
+  <div className="fixed inset-0 bg-gradient-to-br from-emerald-900/6 via-black/20 to-transparent" />
 
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -96,31 +106,29 @@ export default function BlogPage() {
       </div>
 
       <div className="relative z-10">
-        <Navbar />
-
         {/* Hero Section */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="container mx-auto px-4 py-20 md:py-32 mt-16"
+          className="container mx-auto px-4 py-12 md:py-20 mt-8"
         >
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center mb-16 md:mb-24 max-w-4xl mx-auto"
+            className="text-center mb-12 md:mb-20 max-w-4xl mx-auto"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-6"
+              className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2 mb-6"
             >
-              <BookOpen className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-purple-300 font-medium">Blog</span>
+              <BookOpen className="w-4 h-4 text-emerald-300" />
+              <span className="text-sm text-emerald-300 font-medium">Blog</span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
               Compartilhando
               <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Conhecimento
@@ -134,7 +142,7 @@ export default function BlogPage() {
           </motion.div>
 
           {/* Categories Grid */}
-          <motion.div
+            <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"

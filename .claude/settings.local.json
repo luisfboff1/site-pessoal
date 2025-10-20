@@ -46,7 +46,10 @@
       "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx''\")",
       "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page.tsx''\")",
       "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page.tsx''\")",
-      "Bash(npm install next-mdx-remote)"
+      "Bash(npm install next-mdx-remote)",
+      "Bash(npm install:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(npx shadcn@latest add:*)"
     ],
     "deny": [],
     "ask": []

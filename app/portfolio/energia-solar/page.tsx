@@ -2,7 +2,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { Navbar } from '@/components/SharedNavbar';
+import Orb from '@/components/Orb';
 
 const InfiniteMenu = dynamic(() => import('@/components/InfiniteMenu'), { ssr: false });
 
@@ -47,14 +47,16 @@ const projectsEnergiaSolar = [
 
 export default function EnergiaSolarPortfolio() {
   return (
-    <main className="relative min-h-screen bg-black overflow-hidden">
-      {/* Background gradient */}
+  <main className="relative min-h-screen overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+          <Orb hoverIntensity={0} rotateOnHover={false} hue={40} forceHoverState={false} />
+        </div>
+      </div>
+      {/* Background gradient fallback */}
       <div className="fixed inset-0 bg-gradient-to-br from-yellow-900/20 via-black to-black" />
       
       <div className="relative z-10">
-        {/* Navbar */}
-        <Navbar />
-        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
