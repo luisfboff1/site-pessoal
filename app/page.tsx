@@ -35,6 +35,14 @@ function Navbar({ className }: { className?: string }) {
             <HoveredLink href="/portfolio/ciencia-dados">Ciência de Dados</HoveredLink>
           </div>
         </MenuItem>
+        <MenuItem setActive={setActive} active={active} item="Blog">
+          <div className="flex flex-col space-y-4 text-sm">
+            <HoveredLink href="/blog">Todas as Categorias</HoveredLink>
+            <HoveredLink href="/blog/desenvolvimento">Desenvolvimento</HoveredLink>
+            <HoveredLink href="/blog/energia-solar">Energia Solar</HoveredLink>
+            <HoveredLink href="/blog/ciencia-dados">Ciência de Dados</HoveredLink>
+          </div>
+        </MenuItem>
         <MenuItem setActive={setActive} active={active} item="Serviços">
           <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href="#services">Ver Todos</HoveredLink>

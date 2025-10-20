@@ -1,0 +1,413 @@
+---
+title: "Next.js 15 App Router: Guia Completo"
+description: "Entenda o novo App Router do Next.js 15, Server Components, streaming e as melhores práticas para construir aplicações modernas"
+date: "2024-03-18"
+author: "Luis Fernando Boff"
+image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&h=630&fit=crop"
+tags: ["Next.js", "React", "Frontend", "App Router"]
+---
+
+O Next.js 15 trouxe uma revolução na forma como construímos aplicações React com o App Router. Neste guia, vou explorar todas as funcionalidades, conceitos e melhores práticas para você dominar essa nova arquitetura.
+
+## O que mudou com o App Router?
+
+O App Router representa uma mudança fundamental no Next.js, trazendo:
+
+- **Server Components por padrão**: Renderização no servidor sem JavaScript no cliente
+- **Layouts aninhados**: Compartilhamento de UI entre rotas
+- **Streaming e Suspense**: Carregamento progressivo de conteúdo
+- **Novo sistema de roteamento**: Baseado em diretórios com arquivos especiais
+
+## Estrutura de Arquivos
+
+### Arquivos Especiais
+
+```
+app/
+├── layout.tsx          # Layout raiz (obrigatório)
+├── page.tsx            # Página inicial
+├── loading.tsx         # UI de carregamento
+├── error.tsx           # UI de erro
+├── not-found.tsx       # Página 404
+└── dashboard/
+    ├── layout.tsx      # Layout aninhado
+    ├── page.tsx        # /dashboard
+    └── settings/
+        └── page.tsx    # /dashboard/settings
+```
+
+### Layout Raiz
+
+Todo app precisa de um `layout.tsx` raiz:
+
+```tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="pt-BR">
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+
+## Server vs Client Components
+
+### Server Components (Padrão)
+
+Por padrão, todos os componentes no App Router são Server Components:
+
+```tsx
+// app/page.tsx
+async function getData() {
+  const res = await fetch('https://api.example.com/data')
+  return res.json()
+}
+
+export default async function Page() {
+  const data = await getData()
+  return <div>{data.title}</div>
+}
+```
+
+**Vantagens**:
+- Menos JavaScript enviado ao cliente
+- Acesso direto a recursos do servidor (banco de dados, filesystem)
+- Melhor SEO
+- Carregamento inicial mais rápido
+
+### Client Components
+
+Use `'use client'` quando precisar de:
+- Hooks do React (useState, useEffect, etc.)
+- Event handlers (onClick, onChange, etc.)
+- Browser APIs (localStorage, window, etc.)
+- Context API
+
+```tsx
+'use client'
+import { useState } from 'react'
+
+export default function Counter() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+```
+
+## Data Fetching
+
+### fetch() com Cache Automático
+
+O Next.js estende o `fetch` com cache inteligente:
+
+```tsx
+// Cache por padrão (force-cache)
+const res = await fetch('https://api.example.com/data')
+
+// Revalidar a cada 60 segundos
+const res = await fetch('https://api.example.com/data', {
+  next: { revalidate: 60 }
+})
+
+// Sem cache (sempre buscar dados frescos)
+const res = await fetch('https://api.example.com/data', {
+  cache: 'no-store'
+})
+```
+
+### Revalidação Sob Demanda
+
+```tsx
+import { revalidatePath } from 'next/cache'
+
+export async function action() {
+  'use server'
+  // Revalidar uma rota específica
+  revalidatePath('/blog')
+  // Revalidar uma tag de cache
+  revalidateTag('posts')
+}
+```
+
+## Streaming e Suspense
+
+Carregue partes da página progressivamente:
+
+```tsx
+import { Suspense } from 'react'
+
+async function SlowComponent() {
+  await new Promise(resolve => setTimeout(resolve, 3000))
+  return <div>Conteúdo lento</div>
+}
+
+export default function Page() {
+  return (
+    <div>
+      <h1>Página</h1>
+      <Suspense fallback={<div>Carregando...</div>}>
+        <SlowComponent />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+### loading.tsx
+
+Crie uma UI de loading automática:
+
+```tsx
+// app/dashboard/loading.tsx
+export default function Loading() {
+  return <div>Carregando dashboard...</div>
+}
+```
+
+## Tratamento de Erros
+
+### error.tsx
+
+```tsx
+'use client' // Error components devem ser Client Components
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div>
+      <h2>Algo deu errado!</h2>
+      <button onClick={() => reset()}>Tentar novamente</button>
+    </div>
+  )
+}
+```
+
+## Route Handlers (API Routes)
+
+Crie APIs REST no App Router:
+
+```tsx
+// app/api/posts/route.ts
+import { NextResponse } from 'next/server'
+
+export async function GET(request: Request) {
+  const posts = await getPosts()
+  return NextResponse.json(posts)
+}
+
+export async function POST(request: Request) {
+  const body = await request.json()
+  const post = await createPost(body)
+  return NextResponse.json(post, { status: 201 })
+}
+```
+
+## Rotas Dinâmicas
+
+### [slug]/page.tsx
+
+```tsx
+// app/blog/[slug]/page.tsx
+export async function generateStaticParams() {
+  const posts = await getPosts()
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }))
+}
+
+export default function Page({ params }: { params: { slug: string } }) {
+  return <div>Post: {params.slug}</div>
+}
+```
+
+### Catch-all Routes
+
+```tsx
+// app/docs/[...slug]/page.tsx
+export default function Page({ params }: { params: { slug: string[] } }) {
+  // /docs/a/b/c -> params.slug = ['a', 'b', 'c']
+  return <div>{params.slug.join('/')}</div>
+}
+```
+
+## Metadata API
+
+### Static Metadata
+
+```tsx
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Minha Página',
+  description: 'Descrição da página',
+  openGraph: {
+    title: 'Minha Página',
+    description: 'Descrição da página',
+    images: ['/og-image.jpg'],
+  },
+}
+```
+
+### Dynamic Metadata
+
+```tsx
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const post = await getPost(params.id)
+
+  return {
+    title: post.title,
+    description: post.description,
+  }
+}
+```
+
+## Parallel Routes
+
+Renderize múltiplas páginas na mesma rota:
+
+```
+app/
+└── dashboard/
+    ├── @analytics/
+    │   └── page.tsx
+    ├── @team/
+    │   └── page.tsx
+    └── layout.tsx
+```
+
+```tsx
+// app/dashboard/layout.tsx
+export default function Layout({
+  children,
+  analytics,
+  team,
+}: {
+  children: React.ReactNode
+  analytics: React.ReactNode
+  team: React.ReactNode
+}) {
+  return (
+    <>
+      {children}
+      {analytics}
+      {team}
+    </>
+  )
+}
+```
+
+## Intercepting Routes
+
+Intercepte navegação para mostrar modals:
+
+```
+app/
+└── photos/
+    ├── [id]/
+    │   └── page.tsx
+    └── (..)photos/
+        └── [id]/
+            └── page.tsx    # Modal
+```
+
+## Melhores Práticas
+
+### 1. Use Server Components Sempre que Possível
+
+```tsx
+// ✅ Bom: Server Component
+async function ProductList() {
+  const products = await getProducts()
+  return <div>...</div>
+}
+
+// ❌ Evite: Client Component desnecessário
+'use client'
+function ProductList() {
+  const [products, setProducts] = useState([])
+  useEffect(() => {
+    fetch('/api/products').then(...)
+  }, [])
+  return <div>...</div>
+}
+```
+
+### 2. Composition Pattern
+
+Mantenha Client Components pequenos e compostos:
+
+```tsx
+// Server Component
+import ClientButton from './client-button'
+
+export default function Page() {
+  const data = await getData()
+
+  return (
+    <div>
+      <h1>{data.title}</h1>
+      <ClientButton /> {/* Pequeno Client Component */}
+    </div>
+  )
+}
+```
+
+### 3. Streaming para Melhor UX
+
+```tsx
+<Suspense fallback={<Skeleton />}>
+  <DataComponent />
+</Suspense>
+```
+
+### 4. Organize por Funcionalidade
+
+```
+app/
+└── (marketing)/          # Route group
+    ├── layout.tsx
+    ├── page.tsx
+    └── about/
+        └── page.tsx
+```
+
+## Migração do Pages Router
+
+Se você tem um projeto com Pages Router:
+
+1. Crie o diretório `app/` ao lado de `pages/`
+2. Migre rotas incrementalmente
+3. Ambos os routers podem coexistir
+4. Use `next-codemod` para automatizar partes da migração
+
+```bash
+npx @next/codemod@latest app-router-recipe ./pages
+```
+
+## Conclusão
+
+O App Router do Next.js 15 traz uma arquitetura mais poderosa e eficiente. Os principais benefícios:
+
+- ⚡ Performance superior com Server Components
+- 🎨 Layouts mais flexíveis e reutilizáveis
+- 🔄 Streaming para melhor UX
+- 📦 Menos JavaScript no bundle
+- 🛠️ APIs mais simples e intuitivas
+
+Comece migrando rotas simples e gradualmente adote os recursos avançados. O investimento vale a pena!
+
+Tem dúvidas sobre algum conceito? Deixe nos comentários!

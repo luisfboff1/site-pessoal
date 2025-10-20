@@ -1,0 +1,544 @@
+---
+title: "Deep Learning em Produção com PyTorch"
+description: "Como treinar, otimizar e deployar modelos de Deep Learning usando PyTorch, ONNX e TorchServe em ambientes de produção"
+date: "2024-03-20"
+author: "Luis Fernando Boff"
+image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop"
+tags: ["Deep Learning", "PyTorch", "MLOps", "Production"]
+---
+
+Treinar um modelo de Deep Learning é só o começo. Colocá-lo em produção de forma eficiente, escalável e confiável é o verdadeiro desafio. Neste guia, vou mostrar o pipeline completo desde o treinamento até o deploy com PyTorch.
+
+## Arquitetura de um Sistema ML em Produção
+
+Um sistema de ML production-ready precisa de:
+
+- **Pipeline de treinamento**: Reproduzível e versionado
+- **Otimização de modelo**: Quantização, pruning, ONNX
+- **Servidor de inferência**: TorchServe, FastAPI, ou TensorRT
+- **Monitoramento**: Logs, métricas e alertas
+- **CI/CD**: Deploy automatizado e testes
+
+## Fase 1: Treinamento Estruturado
+
+### Organização do Código
+
+```python
+project/
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── dataset.py
+├── models/
+│   ├── __init__.py
+│   └── resnet.py
+├── training/
+│   ├── train.py
+│   ├── config.py
+│   └── utils.py
+├── serving/
+│   └── handler.py
+└── requirements.txt
+```
+
+### Config com Hydra
+
+Use Hydra para gerenciar configurações:
+
+```python
+# training/config.py
+from dataclasses import dataclass
+
+@dataclass
+class ModelConfig:
+    name: str = "resnet50"
+    num_classes: int = 10
+    pretrained: bool = True
+
+@dataclass
+class TrainConfig:
+    epochs: int = 100
+    batch_size: int = 32
+    learning_rate: float = 0.001
+    device: str = "cuda"
+
+@dataclass
+class Config:
+    model: ModelConfig = ModelConfig()
+    train: TrainConfig = TrainConfig()
+```
+
+### Training Loop Production-Ready
+
+```python
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
+import mlflow
+
+class Trainer:
+    def __init__(self, model, config, device):
+        self.model = model.to(device)
+        self.config = config
+        self.device = device
+        self.criterion = nn.CrossEntropyLoss()
+        self.optimizer = torch.optim.AdamW(
+            model.parameters(),
+            lr=config.train.learning_rate
+        )
+        self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            self.optimizer,
+            T_max=config.train.epochs
+        )
+        self.writer = SummaryWriter()
+        self.best_acc = 0.0
+
+    def train_epoch(self, dataloader):
+        self.model.train()
+        total_loss = 0
+        correct = 0
+        total = 0
+
+        for batch_idx, (inputs, targets) in enumerate(dataloader):
+            inputs, targets = inputs.to(self.device), targets.to(self.device)
+
+            # Forward
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, targets)
+
+            # Backward
+            self.optimizer.zero_grad()
+            loss.backward()
+
+            # Gradient clipping
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+
+            self.optimizer.step()
+
+            # Metrics
+            total_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+
+        return total_loss / len(dataloader), 100. * correct / total
+
+    @torch.no_grad()
+    def validate(self, dataloader):
+        self.model.eval()
+        total_loss = 0
+        correct = 0
+        total = 0
+
+        for inputs, targets in dataloader:
+            inputs, targets = inputs.to(self.device), targets.to(self.device)
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, targets)
+
+            total_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+
+        return total_loss / len(dataloader), 100. * correct / total
+
+    def fit(self, train_loader, val_loader):
+        mlflow.start_run()
+        mlflow.log_params({
+            "model": self.config.model.name,
+            "epochs": self.config.train.epochs,
+            "batch_size": self.config.train.batch_size,
+            "lr": self.config.train.learning_rate,
+        })
+
+        for epoch in range(self.config.train.epochs):
+            train_loss, train_acc = self.train_epoch(train_loader)
+            val_loss, val_acc = self.validate(val_loader)
+
+            # Log metrics
+            mlflow.log_metrics({
+                "train_loss": train_loss,
+                "train_acc": train_acc,
+                "val_loss": val_loss,
+                "val_acc": val_acc,
+                "lr": self.optimizer.param_groups[0]['lr']
+            }, step=epoch)
+
+            # TensorBoard
+            self.writer.add_scalars('Loss', {
+                'train': train_loss,
+                'val': val_loss
+            }, epoch)
+            self.writer.add_scalars('Accuracy', {
+                'train': train_acc,
+                'val': val_acc
+            }, epoch)
+
+            # Checkpoint
+            if val_acc > self.best_acc:
+                self.best_acc = val_acc
+                self.save_checkpoint(f'best_model.pth', epoch, val_acc)
+
+            self.scheduler.step()
+
+        mlflow.end_run()
+
+    def save_checkpoint(self, filename, epoch, acc):
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'accuracy': acc,
+            'config': self.config
+        }, filename)
+```
+
+## Fase 2: Otimização do Modelo
+
+### Quantização Dinâmica
+
+Reduz o tamanho do modelo e acelera inferência:
+
+```python
+import torch.quantization
+
+# Quantização dinâmica (pós-treinamento)
+quantized_model = torch.quantization.quantize_dynamic(
+    model,  # Modelo original
+    {torch.nn.Linear},  # Camadas para quantizar
+    dtype=torch.qint8
+)
+
+# Teste de tamanho
+def get_model_size(model):
+    torch.save(model.state_dict(), "temp.p")
+    size = os.path.getsize("temp.p") / 1e6
+    os.remove("temp.p")
+    return size
+
+print(f"Original: {get_model_size(model):.2f} MB")
+print(f"Quantizado: {get_model_size(quantized_model):.2f} MB")
+```
+
+### Quantização Aware Training (QAT)
+
+Para máxima performance:
+
+```python
+import torch.quantization
+
+# Preparar modelo para QAT
+model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+model_prepared = torch.quantization.prepare_qat(model)
+
+# Treinar normalmente
+trainer = Trainer(model_prepared, config, device)
+trainer.fit(train_loader, val_loader)
+
+# Converter para quantizado
+model_quantized = torch.quantization.convert(model_prepared)
+```
+
+### Exportar para ONNX
+
+ONNX permite usar o modelo em diferentes frameworks:
+
+```python
+import torch.onnx
+
+# Criar input de exemplo
+dummy_input = torch.randn(1, 3, 224, 224, device=device)
+
+# Exportar
+torch.onnx.export(
+    model,
+    dummy_input,
+    "model.onnx",
+    export_params=True,
+    opset_version=14,
+    do_constant_folding=True,
+    input_names=['input'],
+    output_names=['output'],
+    dynamic_axes={
+        'input': {0: 'batch_size'},
+        'output': {0: 'batch_size'}
+    }
+)
+
+# Verificar
+import onnx
+onnx_model = onnx.load("model.onnx")
+onnx.checker.check_model(onnx_model)
+```
+
+### ONNX Runtime
+
+Inferência otimizada:
+
+```python
+import onnxruntime as ort
+import numpy as np
+
+# Criar sessão
+session = ort.InferenceSession("model.onnx")
+
+# Preparar input
+input_data = np.random.randn(1, 3, 224, 224).astype(np.float32)
+
+# Inferência
+outputs = session.run(
+    None,
+    {'input': input_data}
+)
+
+print(f"Output shape: {outputs[0].shape}")
+```
+
+## Fase 3: Deploy com TorchServe
+
+### Instalar TorchServe
+
+```bash
+pip install torchserve torch-model-archiver torch-workflow-archiver
+```
+
+### Criar Handler Customizado
+
+```python
+# serving/handler.py
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
+import io
+
+class ImageClassifierHandler:
+    def __init__(self):
+        self.initialized = False
+        self.transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+        ])
+
+    def initialize(self, context):
+        properties = context.system_properties
+        self.device = torch.device(
+            "cuda:" + str(properties.get("gpu_id"))
+            if torch.cuda.is_available()
+            else "cpu"
+        )
+
+        model_dir = properties.get("model_dir")
+        manifest = context.manifest
+
+        # Carregar modelo
+        serialized_file = manifest['model']['serializedFile']
+        model_pt_path = f"{model_dir}/{serialized_file}"
+
+        self.model = torch.jit.load(model_pt_path, map_location=self.device)
+        self.model.eval()
+
+        self.initialized = True
+
+    def preprocess(self, data):
+        images = []
+        for row in data:
+            image = row.get("data") or row.get("body")
+            image = Image.open(io.BytesIO(image)).convert('RGB')
+            image = self.transform(image)
+            images.append(image)
+
+        return torch.stack(images).to(self.device)
+
+    def inference(self, data):
+        with torch.no_grad():
+            outputs = self.model(data)
+        return outputs
+
+    def postprocess(self, inference_output):
+        probabilities = torch.nn.functional.softmax(inference_output, dim=1)
+        top5_prob, top5_idx = torch.topk(probabilities, 5)
+
+        results = []
+        for prob, idx in zip(top5_prob, top5_idx):
+            result = {
+                str(i.item()): p.item()
+                for p, i in zip(prob, idx)
+            }
+            results.append(result)
+
+        return results
+
+_service = ImageClassifierHandler()
+
+def handle(data, context):
+    if not _service.initialized:
+        _service.initialize(context)
+
+    data = _service.preprocess(data)
+    data = _service.inference(data)
+    data = _service.postprocess(data)
+
+    return data
+```
+
+### Arquivar Modelo
+
+```bash
+torch-model-archiver \
+  --model-name resnet50_classifier \
+  --version 1.0 \
+  --serialized-file model.pt \
+  --handler serving/handler.py \
+  --extra-files index_to_name.json \
+  --export-path model_store
+```
+
+### Iniciar TorchServe
+
+```bash
+torchserve \
+  --start \
+  --ncs \
+  --model-store model_store \
+  --models resnet50=resnet50_classifier.mar \
+  --ts-config config.properties
+```
+
+### Fazer Requisições
+
+```python
+import requests
+
+url = "http://localhost:8080/predictions/resnet50"
+files = {'data': open('image.jpg', 'rb')}
+response = requests.post(url, files=files)
+print(response.json())
+```
+
+## Fase 4: Monitoramento
+
+### Prometheus + Grafana
+
+```python
+from prometheus_client import Counter, Histogram, start_http_server
+
+# Métricas
+REQUEST_COUNT = Counter('requests_total', 'Total requests')
+REQUEST_LATENCY = Histogram('request_latency_seconds', 'Request latency')
+PREDICTION_CONFIDENCE = Histogram('prediction_confidence', 'Confidence scores')
+
+@REQUEST_LATENCY.time()
+def predict(image):
+    REQUEST_COUNT.inc()
+    output = model(image)
+    confidence = torch.max(torch.softmax(output, dim=1)).item()
+    PREDICTION_CONFIDENCE.observe(confidence)
+    return output
+```
+
+### Logging Estruturado
+
+```python
+import logging
+import json
+
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        log_obj = {
+            'timestamp': self.formatTime(record),
+            'level': record.levelname,
+            'message': record.getMessage(),
+            'module': record.module,
+            'function': record.funcName
+        }
+        return json.dumps(log_obj)
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+handler.setFormatter(JSONFormatter())
+logger.addHandler(handler)
+```
+
+## Melhores Práticas
+
+### 1. Versionamento de Modelos
+
+Use MLflow ou DVC:
+
+```bash
+# MLflow
+mlflow models serve -m models:/resnet50/production -p 5000
+
+# DVC
+dvc add models/model.pt
+git commit -m "Update model v1.2"
+dvc push
+```
+
+### 2. A/B Testing
+
+```python
+import random
+
+def route_request(request):
+    if random.random() < 0.1:
+        return model_v2.predict(request)  # 10% tráfego
+    return model_v1.predict(request)  # 90% tráfego
+```
+
+### 3. Batch Inference
+
+Para throughput maior:
+
+```python
+class BatchPredictor:
+    def __init__(self, model, batch_size=32, max_wait=0.1):
+        self.model = model
+        self.batch_size = batch_size
+        self.max_wait = max_wait
+        self.queue = []
+
+    async def predict(self, input_data):
+        future = asyncio.Future()
+        self.queue.append((input_data, future))
+
+        if len(self.queue) >= self.batch_size:
+            await self.process_batch()
+
+        return await future
+
+    async def process_batch(self):
+        batch = self.queue[:self.batch_size]
+        self.queue = self.queue[self.batch_size:]
+
+        inputs = torch.stack([item[0] for item in batch])
+        outputs = self.model(inputs)
+
+        for i, (_, future) in enumerate(batch):
+            future.set_result(outputs[i])
+```
+
+## Conclusão
+
+Colocar Deep Learning em produção exige:
+
+- ✅ Código estruturado e reproduzível
+- ⚡ Otimização de modelos (quantização, ONNX)
+- 🚀 Servidor de inferência robusto (TorchServe)
+- 📊 Monitoramento contínuo
+- 🔄 CI/CD para atualizações
+
+O investimento em infraestrutura de ML paga dividendos em velocidade de deploy, confiabilidade e custos operacionais.
+
+Próximos artigos nesta série:
+- AutoML e Hyperparameter Tuning com Optuna
+- MLOps com Kubeflow e Airflow
+- Serving multi-modelo e canary deployments
+
+Dúvidas? Deixe nos comentários!

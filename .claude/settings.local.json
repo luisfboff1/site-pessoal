@@ -37,7 +37,16 @@
       "Bash(powershell -Command \"if (-not (Test-Path ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans'')) { New-Item -ItemType Directory -Path ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans'' -Force }\")",
       "Bash(move \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plan-current.md\" \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\twin-plans\\2025-10-19-11-18-eco-vercel-optimization.md\")",
       "Bash(curl -s \"https://luisfboff.com\")",
-      "Bash(git add app/page.tsx components/ProfileCard.tsx components/LiquidEther.tsx next.config.ts)"
+      "Bash(git add app/page.tsx components/ProfileCard.tsx components/LiquidEther.tsx next.config.ts)",
+      "Bash(test -f \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\page.tsx\")",
+      "Bash(npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx gray-matter reading-time remark-gfm rehype-highlight rehype-slug rehype-autolink-headings)",
+      "Bash(powershell -Command \"New-Item -ItemType Directory -Force -Path ''content/blog/energia-solar'',''content/blog/desenvolvimento'',''content/blog/ciencia-dados''\")",
+      "Bash(del \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx\")",
+      "Bash(move \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page-new.tsx\" \"C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx\")",
+      "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\energia-solar\\page.tsx''\")",
+      "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\desenvolvimento\\page.tsx''\")",
+      "Bash(powershell -Command \"Remove-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page.tsx''; Move-Item ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page-new.tsx'' ''C:\\Users\\Luisf\\OneDrive\\Github\\teste2\\app\\blog\\ciencia-dados\\page.tsx''\")",
+      "Bash(npm install next-mdx-remote)"
     ],
     "deny": [],
     "ask": []
