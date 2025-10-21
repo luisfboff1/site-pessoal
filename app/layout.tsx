@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PersonStructuredData, OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
 import ModernNavbarWrapper from "@/components/ModernNavbarWrapper";
@@ -105,6 +106,7 @@ export default function RootLayout({
         <ChatBot />
         <GoogleAnalytics />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
