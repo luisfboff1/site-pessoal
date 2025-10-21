@@ -15,18 +15,39 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.githubusercontent.com',
+      },
+    ],
   },
 
   experimental: {
     optimizePackageImports: ['framer-motion', 'three', 'lucide-react', '@react-three/fiber', '@react-three/drei', 'ogl'],
+    optimizeCss: true,
+    scrollRestoration: true,
+  },
+
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.optimization = {
         ...config.optimization,
+        minimize: true,
+        usedExports: true,
+        sideEffects: false,
         splitChunks: {
           chunks: 'all',
+          maxInitialRequests: 25,
+          minSize: 20000,
           cacheGroups: {
             default: false,
             vendors: false,
@@ -34,11 +55,19 @@ const nextConfig: NextConfig = {
               name: 'three',
               test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
               priority: 40,
+              reuseExistingChunk: true,
             },
             framer: {
               name: 'framer',
               test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
               priority: 30,
+              reuseExistingChunk: true,
+            },
+            commons: {
+              name: 'commons',
+              minChunks: 2,
+              priority: 20,
+              reuseExistingChunk: true,
             },
           },
         },

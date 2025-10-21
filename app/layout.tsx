@@ -12,6 +12,10 @@ import { ClarityInit, ChatBot } from "@/components/DynamicComponents";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
+  preload: false,
+  fallback: ['system-ui', 'arial'],
+  adjustFontFallback: true,
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -87,8 +91,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://luisfboff.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://vercel.live" crossOrigin="anonymous" />
       </head>
   <body className={`${inter.className} antialiased bg-black text-[var(--foreground)]`}>
         <ClarityInit />

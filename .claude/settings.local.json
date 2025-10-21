@@ -51,7 +51,8 @@
       "Bash(powershell -Command:*)",
       "Bash(npx shadcn@latest add:*)",
       "WebFetch(domain:pagespeed.web.dev)",
-      "WebFetch(domain:luisfboff.com)"
+      "WebFetch(domain:luisfboff.com)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

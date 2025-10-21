@@ -1,5 +1,4 @@
 import React from 'react';
-import Plasma from '../Plasma';
 
 type BlogPostSchemaProps = {
   title: string;
@@ -54,15 +53,10 @@ export const BlogPostSchema = ({
   };
 
   return (
-    <>
-      <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-        <Plasma />
-      </div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
   );
 };
 

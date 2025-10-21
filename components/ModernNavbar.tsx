@@ -45,6 +45,9 @@ const ModernNavbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
+    let ticking = false;
+    let rafId: number;
+
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
 
@@ -56,10 +59,21 @@ const ModernNavbar = () => {
       }
 
       setLastScrollY(currentScrollY);
+      ticking = false;
     };
 
-    window.addEventListener('scroll', controlNavbar, { passive: true });
-    return () => window.removeEventListener('scroll', controlNavbar);
+    const requestTick = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(controlNavbar);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', requestTick);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [lastScrollY]);
 
   const handleLinkClick = () => {
