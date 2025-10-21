@@ -12,6 +12,8 @@ export const Comments = ({ repo, theme = 'github-dark' }: CommentsProps) => {
   const commentsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const commentsContainer = commentsRef.current;
+
     const script = document.createElement('script');
     script.src = 'https://utteranc.es/client.js';
     script.setAttribute('repo', repo);
@@ -20,13 +22,13 @@ export const Comments = ({ repo, theme = 'github-dark' }: CommentsProps) => {
     script.setAttribute('crossorigin', 'anonymous');
     script.async = true;
 
-    if (commentsRef.current) {
-      commentsRef.current.appendChild(script);
+    if (commentsContainer) {
+      commentsContainer.appendChild(script);
     }
 
     return () => {
-      if (commentsRef.current) {
-        commentsRef.current.innerHTML = '';
+      if (commentsContainer) {
+        commentsContainer.innerHTML = '';
       }
     };
   }, [repo, theme]);

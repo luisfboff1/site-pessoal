@@ -133,7 +133,7 @@ const ChatBot = () => {
 
   const router = useRouter();
 
-  const renderMessageContent = (text: string, index: number) => {
+  const renderMessageContent = (text: string) => {
     // No truncation UI — messages should already be concise. Still linkify internal and external URLs.
     const parts = text.split(/(\s+)/g);
     return (
@@ -257,7 +257,7 @@ const ChatBot = () => {
                         : 'bg-gray-800 text-gray-100'
                     }`}
                   >
-                    {message.role === 'assistant' ? renderMessageContent(message.content, index) : (
+                    {message.role === 'assistant' ? renderMessageContent(message.content) : (
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     )}
                   </div>

@@ -7,7 +7,7 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PersonStructuredData, OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
 import ModernNavbarWrapper from "@/components/ModernNavbarWrapper";
-import { ClarityInit, ChatBot, Plasma } from "@/components/DynamicComponents";
+import { ClarityInit, ChatBot } from "@/components/DynamicComponents";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -90,11 +90,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-  <body className={`${inter.className} antialiased bg-[var(--background)] text-[var(--foreground)]`}>
+  <body className={`${inter.className} antialiased bg-black text-[var(--foreground)]`}>
         <ClarityInit />
-        <div className="fixed inset-0 -z-10 pointer-events-none">
-          <Plasma color="#0ea5a4" speed={0.5} direction="forward" scale={1.1} opacity={0.08} mouseInteractive={false} />
-        </div>
         <PersonStructuredData />
         <OrganizationStructuredData />
         <WebSiteStructuredData />

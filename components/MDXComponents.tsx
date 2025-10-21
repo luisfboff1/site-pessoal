@@ -91,10 +91,12 @@ const MDXComponents = {
       );
     }
     return (
-      <div className="my-8 rounded-lg overflow-hidden">
-        <img
+      <div className="my-8 rounded-lg overflow-hidden relative w-full" style={{ minHeight: '400px' }}>
+        <Image
           src={(src as unknown) as string}
           alt={alt || ''}
+          width={1200}
+          height={600}
           className="w-full h-auto"
         />
       </div>

@@ -2,13 +2,13 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Metadata } from 'next';
+import Image from 'next/image';
 import { getPostBySlug, getCategorySlugs, getAllCategories } from '@/lib/mdx';
 import MDXComponents from '@/components/MDXComponents';
 import { SocialShare } from '@/components/blog/SocialShare';
 import { Newsletter } from '@/components/blog/Newsletter';
 import { Comments } from '@/components/blog/Comments';
 import { BlogPostSchema, BreadcrumbSchema } from '@/components/blog/BlogSchema';
-import Plasma from '@/components/Plasma';
 import { ArrowLeft, Calendar, Clock, User, Tag } from 'lucide-react';
 import Link from 'next/link';
 
@@ -116,18 +116,10 @@ export default async function BlogPostPage({ params }: PageProps) {
         ]}
       />
 
-  <main className="relative min-h-screen overflow-hidden">
-        <div className="fixed inset-0 -z-10 pointer-events-none">
-          <Plasma
-            color="#ff6b35"
-            speed={0.6}
-            direction="forward"
-            scale={1.1}
-            opacity={0.8}
-            mouseInteractive={true}
-          />
-        </div>
-  <div className="fixed inset-0 bg-gradient-to-br from-emerald-900/5 via-black/20 to-transparent" />
+  <main className="relative min-h-screen overflow-hidden bg-black">
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-orange-950/20 via-black to-black" />
+        <div className="fixed top-20 right-1/4 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl -z-10" />
+        <div className="fixed bottom-20 left-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl -z-10" />
 
         <div className="relative z-10">
           <article className="container mx-auto px-4 py-20 md:py-32 mt-16 max-w-4xl">
@@ -156,10 +148,13 @@ export default async function BlogPostPage({ params }: PageProps) {
             {/* Hero image */}
             {post.image && (
               <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-8">
-                <img
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>

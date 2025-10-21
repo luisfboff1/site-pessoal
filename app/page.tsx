@@ -5,15 +5,12 @@ import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import StatsCounter from '@/components/StatsCounter';
-import DarkVeil from '@/components/DarkVeil';
+import MobileOptimizedBackground from '@/components/MobileOptimizedBackground';
 import { Footer } from '@/components/sections/Footer';
 import { Mail, Github, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const TechRollingGallery = dynamic(() => import('../components/TechRollingGallery'), {
-  ssr: false,
-  loading: () => <div className="h-64 bg-gradient-to-r from-emerald-900/20 to-cyan-900/20 animate-pulse rounded-lg" />
-});
+import MobileTechGallery from '@/components/MobileTechGallery';
 const AboutMe = dynamic(() => import('@/components/sections/AboutMe'), {
   loading: () => <div className="min-h-screen bg-black/50" />
 });
@@ -55,18 +52,8 @@ export default function Home() {
 
   return (
   <main className="relative min-h-screen overflow-hidden">
-      {/* DarkVeil Background - Fixed */}
-      <div className="fixed inset-0 z-0" style={{ width: '100%', height: '100vh' }}>
-        <DarkVeil
-          hueShift={0}
-          noiseIntensity={0.12}
-          scanlineIntensity={0}
-          speed={0.5}
-          scanlineFrequency={0}
-          warpAmount={0.8}
-          resolutionScale={1}
-        />
-      </div>
+      {/* Optimized Background - WebGL on desktop, CSS on mobile */}
+      <MobileOptimizedBackground />
 
       <div className="relative z-10">
 
@@ -162,10 +149,10 @@ export default function Home() {
         {/* Portfolio Preview Section */}
         <PortfolioPreview />
 
-        {/* Rolling Gallery 3D - Integrado abaixo do portfolio */}
+        {/* Tech Gallery - 3D on desktop, simple grid on mobile */}
         <section id="tech-rolling" className="py-16 px-4">
           <div className="max-w-7xl mx-auto">
-            <TechRollingGallery />
+            <MobileTechGallery />
           </div>
         </section>
 

@@ -46,8 +46,10 @@ export const contactPage = {
   keywords: ['contato', 'falar', 'contratar']
 };
 
-export default {
+const linkMap = {
   blogPosts,
   portfolioPages,
   contactPage
 };
+
+export default linkMap;

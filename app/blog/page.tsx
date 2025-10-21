@@ -2,7 +2,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Code, Lightbulb, TrendingUp, ArrowRight } from 'lucide-react';
-import Plasma from '@/components/Plasma';
 import Link from 'next/link';
 
 const categories = [
@@ -62,19 +61,11 @@ const itemVariants = {
 
 export default function BlogPage() {
   return (
-  <main className="relative min-h-screen overflow-hidden">
-      {/* Background gradient */}
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <Plasma
-          color="#ff6b35"
-          speed={0.6}
-          direction="forward"
-          scale={1.1}
-          opacity={0.8}
-          mouseInteractive={true}
-        />
-      </div>
-  <div className="fixed inset-0 bg-gradient-to-br from-emerald-900/6 via-black/20 to-transparent" />
+  <main className="relative min-h-screen overflow-hidden bg-black">
+      {/* Background gradient - lightweight CSS only */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-orange-950/20 via-black to-black" />
+      <div className="fixed top-20 right-1/4 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl -z-10" />
+      <div className="fixed bottom-20 left-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl -z-10" />
 
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

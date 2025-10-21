@@ -3,8 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Lightbulb, Code, TrendingUp, ArrowLeft, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { BlogPost } from '@/lib/mdx';
-import Plasma from '@/components/Plasma';
 
 type CategoryPageProps = {
   category: string;
@@ -59,18 +59,10 @@ export default function CategoryPage({
   const gradientBg = gradient.replace('from-', 'from-').replace('via-', 'via-').replace('to-', 'to-').split('/')[0].replace('from-', '').replace('via-', '').replace('to-', '').split(' ')[0];
 
   return (
-  <main className="relative min-h-screen bg-transparent overflow-hidden">
-      <div className="fixed inset-0 -z-10 pointer-events-none">
-        <Plasma
-          color="#ff6b35"
-          speed={0.6}
-          direction="forward"
-          scale={1.1}
-          opacity={0.8}
-          mouseInteractive={false}
-        />
-      </div>
-      <div className={`fixed inset-0 bg-gradient-to-br from-${gradientBg}-900/10 via-black to-black`} />
+  <main className="relative min-h-screen bg-black overflow-hidden">
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-orange-950/20 via-black to-black" />
+      <div className="fixed top-20 right-1/4 w-96 h-96 bg-orange-600/5 rounded-full blur-3xl -z-10" />
+      <div className="fixed bottom-20 left-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl -z-10" />
 
       <div className="relative z-10">
 
@@ -141,10 +133,12 @@ export default function CategoryPage({
                   <article className={`relative h-full bg-gradient-to-br ${gradient} border ${borderColor} rounded-2xl overflow-hidden backdrop-blur-sm transition-all`}>
                     {/* Image */}
                     <div className="relative h-48 w-full bg-neutral-900 overflow-hidden">
-                      <img
+                      <Image
                         src={post.image}
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     </div>
