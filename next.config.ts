@@ -37,17 +37,20 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
 
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev) {
       config.optimization = {
         ...config.optimization,
         minimize: true,
         usedExports: true,
         sideEffects: false,
+        moduleIds: 'deterministic',
+        runtimeChunk: 'single',
         splitChunks: {
           chunks: 'all',
           maxInitialRequests: 25,
           minSize: 20000,
+          maxSize: 244000,
           cacheGroups: {
             default: false,
             vendors: false,
@@ -56,12 +59,21 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
               priority: 40,
               reuseExistingChunk: true,
+              enforce: true,
             },
             framer: {
               name: 'framer',
               test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
               priority: 30,
               reuseExistingChunk: true,
+              enforce: true,
+            },
+            react: {
+              name: 'react-vendors',
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+              priority: 25,
+              reuseExistingChunk: true,
+              enforce: true,
             },
             commons: {
               name: 'commons',

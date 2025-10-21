@@ -78,6 +78,7 @@ export default function Home() {
                     width={192}
                     height={192}
                     priority
+                    fetchPriority="high"
                     className="w-full h-full object-cover"
                   />
                 </div>

@@ -92,18 +92,19 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://luisfboff.com" />
+        <link rel="preload" href="/avatar.png" as="image" fetchPriority="high" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://vercel.live" crossOrigin="anonymous" />
       </head>
   <body className={`${inter.className} antialiased bg-black text-[var(--foreground)]`}>
-        <ClarityInit />
         <PersonStructuredData />
         <OrganizationStructuredData />
         <WebSiteStructuredData />
   <ModernNavbarWrapper />
         {children}
         <ChatBot />
+        <ClarityInit />
         <GoogleAnalytics />
         <SpeedInsights />
         <Analytics />
