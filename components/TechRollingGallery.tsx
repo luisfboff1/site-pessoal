@@ -71,6 +71,14 @@ export const TechRollingGallery: React.FC<Props> = ({
   const velocityRef = useRef(0);
   const lastDragX = useRef<number | null>(null);
   const animationRef = useRef<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Atualiza rotação combinando auto e drag
   const updateRotation = () => {
@@ -154,7 +162,7 @@ export const TechRollingGallery: React.FC<Props> = ({
     if (pauseOnHover && !isDragging) setIsPaused(false);
   };
 
-  const radius = 500; // Mantém espaçamento maior
+  const radius = isMobile ? 300 : 500; // Menor raio para mobile
   const itemCount = technologies.length;
   const angleStep = 360 / itemCount;
 
@@ -194,30 +202,30 @@ export const TechRollingGallery: React.FC<Props> = ({
               key={index}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
               style={{
-                transform: `translate3d(${x}px, 0, ${z}px) scale(${scale*0.7})`,
+                transform: `translate3d(${x}px, 0, ${z}px) scale(${scale*(isMobile ? 0.5 : 0.7)})`,
                 zIndex: Math.floor(z),
                 opacity,
                 filter: `blur(${blur}px)`,
-                willChange: 'transform, opacity',
+                willChange: isMobile ? 'auto' : 'transform, opacity',
               }}
-              transition={index === 0 ? { duration: 0.2, ease: 'linear' } : { type: 'spring', stiffness: 60, damping: 30 }}
+              transition={isMobile ? { duration: 0 } : (index === 0 ? { duration: 0.2, ease: 'linear' } : { type: 'spring', stiffness: 60, damping: 30 })}
             >
               <div
-                className="relative p-2 rounded-2xl bg-black/70 backdrop-blur-md border border-white/20 hover:border-purple-500/50 transition-all duration-300 w-[220px]"
+                className={`relative p-2 rounded-2xl bg-black/70 ${isMobile ? 'backdrop-blur-sm' : 'backdrop-blur-md'} border border-white/20 hover:border-purple-500/50 transition-all duration-300 w-[220px]`}
                 style={{
-                  boxShadow: `0 20px 60px rgba(82, 39, 255, ${(z + radius) / (2 * radius) * 0.4})`,
+                  boxShadow: isMobile ? 'none' : `0 20px 60px rgba(82, 39, 255, ${(z + radius) / (2 * radius) * 0.4})`,
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl" />
-                <div className="relative space-y-5 text-center">
+                {!isMobile && <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl" />}
+                <div className={`relative ${isMobile ? 'space-y-3' : 'space-y-5'} text-center`}>
                   <div className="mx-auto">
                     <Icon
-                      className="w-24 h-24 mx-auto"
+                      className={isMobile ? "w-16 h-16 mx-auto" : "w-24 h-24 mx-auto"}
                       style={{ color: tech.color }}
                       strokeWidth={1.5}
                     />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{tech.name}</h3>
+                  <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-white`}>{tech.name}</h3>
                   <span
                     className="inline-block px-4 py-2 rounded-full text-sm font-medium"
                     style={{

@@ -2,29 +2,55 @@
 // Example: To prioritize a session for recording, call Clarity.upgrade('important-action') when a key event happens.
 'use client';
 import React, { useEffect } from 'react';
-import Clarity from '@microsoft/clarity';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import StatsCounter from '@/components/StatsCounter';
-import AboutMe from '@/components/sections/AboutMe';
 import DarkVeil from '@/components/DarkVeil';
-import { ServicesSection } from '@/components/sections/ServicesSection';
 import { Footer } from '@/components/sections/Footer';
-import { PortfolioPreview } from '@/components/sections/PortfolioPreview';
 import { Mail, Github, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const TechRollingGallery = dynamic(() => import('../components/TechRollingGallery'), { ssr: false });
+const TechRollingGallery = dynamic(() => import('../components/TechRollingGallery'), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gradient-to-r from-emerald-900/20 to-cyan-900/20 animate-pulse rounded-lg" />
+});
+const AboutMe = dynamic(() => import('@/components/sections/AboutMe'), {
+  loading: () => <div className="min-h-screen bg-black/50" />
+});
+const ServicesSection = dynamic(() => import('@/components/sections/ServicesSection').then(mod => ({ default: mod.ServicesSection })), {
+  loading: () => <div className="min-h-screen bg-black/50" />
+});
+const PortfolioPreview = dynamic(() => import('@/components/sections/PortfolioPreview').then(mod => ({ default: mod.PortfolioPreview })), {
+  loading: () => <div className="min-h-screen bg-black/50" />
+});
 
 
 export default function Home() {
   useEffect(() => {
-    // Microsoft Clarity Identify API example
-    // Replace 'custom-id' with a real user/session/page identifier if available
-    Clarity.identify('custom-id', undefined, undefined, 'Luis Fernando Boff');
-    // Custom Tag example
-    Clarity.setTag('userType', 'visitor');
-    // Custom Event example
-    Clarity.event('page-loaded');
+    // Wait for Clarity to be initialized
+    interface WindowWithClarity extends Window {
+      clarity?: (command: string, ...args: unknown[]) => void;
+    }
+
+    const initClarity = () => {
+      const w = window as unknown as WindowWithClarity;
+      if (typeof window !== 'undefined' && w.clarity) {
+        try {
+          w.clarity('identify', 'custom-id', undefined, undefined, 'Luis Fernando Boff');
+          w.clarity('set', 'userType', 'visitor');
+          w.clarity('event', 'page-loaded');
+        } catch {
+          console.warn('Clarity not ready yet');
+        }
+      } else {
+        // Retry after a short delay if Clarity hasn't loaded yet
+        const timeout = setTimeout(initClarity, 100);
+        return () => clearTimeout(timeout);
+      }
+    };
+
+    const timeout = setTimeout(initClarity, 500); // Give Clarity time to load
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -59,13 +85,13 @@ export default function Home() {
               >
                 <div className="absolute -inset-3 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
                 <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-3 border-emerald-500/30 shadow-2xl shadow-emerald-500/10 bg-gray-900">
-                  <img
+                  <Image
                     src="/avatar.png"
                     alt="Luis Fernando Boff"
+                    width={192}
+                    height={192}
+                    priority
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=LuisFernandoBoff';
-                    }}
                   />
                 </div>
               </motion.div>

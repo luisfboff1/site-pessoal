@@ -11,10 +11,14 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   experimental: {
-    optimizePackageImports: ['framer-motion', 'three', 'lucide-react'],
+    optimizePackageImports: ['framer-motion', 'three', 'lucide-react', '@react-three/fiber', '@react-three/drei', 'ogl'],
   },
 
   webpack: (config, { isServer }) => {
@@ -63,6 +67,24 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'interest-cohort=()',
+          },
+        ],
+      },
+      {
+        source: '/(.*)\\.(jpg|jpeg|png|gif|webp|avif|ico|svg)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },

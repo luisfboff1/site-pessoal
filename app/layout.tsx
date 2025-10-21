@@ -1,15 +1,13 @@
 // To enable cookie consent for Clarity tracking, call Clarity.consent(true) or Clarity.consent(false) after initialization if required by your privacy policy.
 // To prioritize session recording, use Clarity.upgrade('reason') when a special event occurs.
 import type { Metadata } from "next";
-import ClarityInit from "@/components/ClarityInit";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PersonStructuredData, OrganizationStructuredData, WebSiteStructuredData } from "@/components/StructuredData";
-import ChatBot from "@/components/ChatBot";
 import ModernNavbarWrapper from "@/components/ModernNavbarWrapper";
-import Plasma from '@/components/Plasma';
+import { ClarityInit, ChatBot, Plasma } from "@/components/DynamicComponents";
 
 const inter = Inter({
   subsets: ["latin"],

@@ -97,8 +97,11 @@ export default function DarkVeil({
     const canvas = ref.current as HTMLCanvasElement;
     const parent = canvas.parentElement as HTMLElement;
 
+    const isMobile = window.innerWidth < 768;
+    const effectiveResScale = isMobile ? resolutionScale * 0.5 : resolutionScale;
+
     const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
+      dpr: isMobile ? 1 : Math.min(window.devicePixelRatio, 2),
       canvas
     });
 
@@ -124,7 +127,7 @@ export default function DarkVeil({
     const resize = () => {
       const w = parent.clientWidth,
         h = parent.clientHeight;
-      renderer.setSize(w * resolutionScale, h * resolutionScale);
+      renderer.setSize(w * effectiveResScale, h * effectiveResScale);
       program.uniforms.uResolution.value.set(w, h);
     };
 
